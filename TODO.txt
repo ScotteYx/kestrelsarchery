@@ -1,0 +1,59 @@
+=================================
+Required
+=================================
+- Verify booking times
+- Write up instructions
+     - Add date to create booking dialog
+- investigate session timeout
+- cancellations (JH)
+
+=================================
+Desired
+=================================
+- css improvements
+- Display users booking in a different colour
+- Create admin page for changing settings
+- Move settings to db
+- Let admin see all bookings names
+- let user see own bookings
+- do not allow signup without logging out
+- make usernames NOT case sensitive
+- check for duplicate usernames on server side (currently checking client side)
+- purge historical bookings
+- key for calendar colours (DH)
+
+=================================
+Optional
+=================================
+- scroll bars for calendar
+- Move verification code description to a little [?] tooltip popup
+- calendar hover highlight row and column
+- datepicker min max times from settings
+- edit/delete booking
+- max bookings per user per week
+- booking report? users at limit
+- limit bookings starting at the same time
+
+----------------------
+For release
+- Remove test bookings
+/ set max concurrent bookings to 6 (in 2 places)
+- create remix for dev
+
+
+
+
+---------------------------------------
+
+Requirements from committee:
+Off peak 8am-4pm 2 hr slots
+Peak 4pm-7pm 1 hr slots
+--- weekend?
+
+No more than half of lanes starting at same time
+
+max slots per week
+6 lanes
+
+  
+  

@@ -1,0 +1,53 @@
+{
+  "listings": [
+    {
+      "id": 0,
+      "name": "Cardboard box",
+      "image": "https://cdn.gomix.com/b07a12d5-7910-4ca6-9f1f-ae0aa2d99417%2Fcardboard-box-1.jpg",
+      "description": "This box is the perfect size to curl up in.<br>P.S. Do not tip the humans with field mice. They get all weird about it.",
+      "category": "box",
+      "price": 5.12,
+      "booked": [
+        "03/05/2017",
+        "03/06/2017",
+        "03/17/2017",
+        "03/03/2017",
+        "03/02/2017",
+        "03/16/2017"
+      ],
+      "host_id": 0
+    },
+    {
+      "id": 1,
+      "name": "Spacious box",
+      "image": "https://cdn.gomix.com/b07a12d5-7910-4ca6-9f1f-ae0aa2d99417%2Fcardboard-box-2.jpg",
+      "description": "Perfect for those who like to stretch out in their box",
+      "category": "box",
+      "price": 2.89,
+      "booked": [],
+      "host_id": 1
+    }
+  ],
+  "users": [
+    {
+      "id": 0,
+      "username": "admin",
+      "password": "C0bra!",
+      "admin": 1
+    }
+  ],
+  "bookings": [
+    {
+      "id": 0,
+      "userId": 3,
+      "start": "2020-05-18T12:00:00+1:00",
+      "end": "2020-05-18T14:30:00+1:00"
+    },
+    {
+      "id": 0,
+      "userId": 4,
+      "start": "2020-05-18T13:00:00+1:00",
+      "end": "2020-05-18T14:00:00+1:00"
+    }
+  ]
+}

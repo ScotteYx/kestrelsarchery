@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kestrels Archery - Sign up</title>
+
+    <!-- External Stylesheets -->
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+
+    <!-- External libraries -->
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      $(function() {
+        $("#nav-placeholder").load("navbar");
+      });
+    </script>
+    
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+      integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+      crossorigin="anonymous"
+    />
+
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+      integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- The Stylesheet for the page -->
+    <link rel="stylesheet" href="login.css" type="text/css" />
+    <!-- Our client code -->
+    <script src="login.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <div id="nav-placeholder"></div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-offset-5 col-md-2">
+          <img
+            src="https://cdn.glitch.com/6b76e3a2-a9e5-440c-a825-1896c420d0ad%2FKestrelsLogo.jpg?v=1590249283781"
+            class="center img-responsive"
+            alt="Responsive image"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-offset-5 col-md-2">
+          <form id="signUpForm" onsubmit="return false">
+            <div class="form-group">
+              <label for="usernameTxt">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                id="usernameTxt"
+                placeholder="Username"
+                name = "username"
+              />
+            </div>
+            <div class="form-group">
+              <label for="passwordTxt">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="passwordTxt"
+                placeholder="Password"
+                name="password"
+              />
+            </div>
+                        <div class="form-group">
+              <label for="passwordReenterTxt">Re-enter Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="passwordReenterTxt"
+                placeholder="Password"
+                name="passwordReenter"
+              />
+            </div>
+                        <div class="form-group">
+              <label for="verificationTxt">Verification Code*</label>
+              <input
+                type="text"
+                class="form-control"
+                id="verificationTxt"
+                placeholder="Verification Code"
+                name="verifier"
+              />
+            </div>
+            <button
+              type="submit"
+              id="signUpButton"
+              value="Sign Up"
+              class="btn btn-primary"
+            >
+              Sign up
+            </button>
+            <h5>
+              * The verification code should have been emailed to you. If you have
+          not received it please contact the commitee.
+            </h5>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <div hidden>
+    <div id="dialog"></div>
+  </div>
+</html>

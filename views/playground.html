@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Kestrels LIVE Admin</title>
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      textarea,
+      pre {
+        -moz-tab-size: 4;
+        -o-tab-size: 4;
+        tab-size: 4;
+      }
+      #query {
+        width: 80%;
+        min-width: 400px;
+        height: 150px;
+        font-weight: bold;
+        font-size: 16px;
+        padding: 2px 5px;
+      }
+      td,
+      th {
+        padding: 5px;
+        font-size: 16px;
+      }
+
+      label {
+        font-size: 14px;
+        color: slategray;
+      }
+
+      table {
+        width: 100%;
+      }
+
+      th {
+        text-align: left;
+        border-bottom: 1px solid lightgray;
+        padding-bottom: 5px;
+      }
+
+      .error {
+        color: darkred;
+      }
+
+      .sidebar {
+        width: 200px;
+        float: left;
+      }
+
+      .sidebar a {
+        color: white;
+        text-decoration: none;
+        background-color: lightblue;
+        padding: 5px 10px;
+        border-radius: 3px;
+        display: inline-block;
+        margin-bottom: 4px;
+        box-shadow: 1px 1px 3px lightgray;
+        transition: background-color 0.2s;
+      }
+
+      .sidebar a:hover {
+        background-color: white;
+        box-shadow: 1px 1px 5px blue;
+        
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .main {
+        margin-left: 200px;
+      }
+
+      .tables {
+        list-style-type: none;
+        padding-left: 10px;
+      }
+      
+    </style>
+    <script>
+      $(function() {
+        $("#nav-placeholder").load("navbar");
+      });
+    </script>
+  </head>
+
+  <body>
+    <div id="nav-placeholder"></div>
+    <div class="content">
+      <div class="sidebar">
+        <p><strong>Tables</strong></p>
+        <ul class="tables"></ul>
+      </div>
+      <div class="main">
+        <p><strong>Type any SQL query:</strong></p>
+        <textarea id="query"></textarea><br />
+        <button id="submit">Submit query</button>
+        <label for="submit">(Ctrl + Enter)</label>
+        <p><strong>Result:</strong></p>
+        <code>
+          <div class="message"></div>
+          <table id="result"></table>
+        </code>
+      </div>
+    </div>
+
+    <script>
+      var rowLimit = 100;
+
+      function query(q, callback) {
+        var limited = false;
+        if (q.match(/\bselect\b/i) && !q.match(/\blimit\b/i)) {
+          q += " LIMIT " + rowLimit;
+          limited = true;
+        }
+
+        return $.post("/playground-query", { query: q }, function(data) {
+          callback(data, limited);
+        });
+      }
+
+      function queryAndDisplay(q) {
+        $(".message")
+          .removeClass("error")
+          .text("Running query...");
+        var timeStarted = Date.now();
+
+        return query(q, function(result, limited) {
+          $("#result").empty();
+          $(".message").text(
+            "Query completed in " + (Date.now() - timeStarted) + " ms. "
+          );
+
+          if (result.length == 0) {
+            $(".message").append("No rows returned.");
+            return;
+          } else if (result.length == rowLimit) {
+            $(".message").append("First 100 results shown below.");
+          }
+
+          var tr = $("<tr>");
+          for (var key in result[0]) tr.append($("<th>").text(key));
+
+          $("#result").append(tr);
+
+          for (var i = 0; i < result.length; i++) {
+            tr = $("<tr>");
+            for (var key in result[i]) {
+              var text = result[i][key];
+              if (typeof text === "string") text = text.replace("-", "-<wbr>");
+              tr.append($("<td>").html(text));
+            }
+            $("#result").append(tr);
+          }
+        }).fail(function(error) {
+          $(".message")
+            .text(error.responseText)
+            .addClass("error");
+        });
+      }
+
+      function refreshTables() {
+        query("SELECT * FROM sqlite_master WHERE type='table'", function(
+          result
+        ) {
+          $(".tables").empty();
+
+          for (var i = 0; i < result.length; i++)
+            $(".tables").append(
+              "<li><a href=#>" + result[i].name + "</a></li>"
+            );
+        });
+      }
+
+      refreshTables();
+
+      $("#submit").click(function() {
+        var query = $("#query").val();
+
+        queryAndDisplay(query).done(function() {
+          var trimmedQuery = query
+            .replace(/--.*/g, "")
+            .trim()
+            .toLowerCase();
+          if (["crea", "drop", "alte"].indexOf(trimmedQuery.substr(0, 4)) >= 0)
+            refreshTables();
+          else if (
+            ["inse", "upda", "dele"].indexOf(trimmedQuery.substr(0, 4) >= 0)
+          ) {
+            try {
+              var tableName = trimmedQuery
+                .match(/(insert into |update |delete from )\s*(\w+)/)[2]
+                .trim();
+              queryAndDisplay("SELECT * FROM " + tableName);
+            } catch (e) {}
+          }
+        });
+      });
+
+      $(".tables").on("click", "a", function() {
+        queryAndDisplay("SELECT * FROM " + $(this).text());
+      });
+      // Add tab support to the textarea
+      // And Ctrl + Enter to submit
+      // Inspired by http://stackoverflow.com/a/6637396
+      // Key codes from https://www.cambiaresearch.com/articles/15/javascript-char-codes-key-codes
+      var lastKeyCode;
+      $("#query").on("keydown", function(e) {
+        var keyCode = e.keyCode || e.which;
+
+        if (lastKeyCode == 17 && keyCode == 13) {
+          // Ctrl + Enter
+          $("#submit").click();
+        } else if (keyCode == 9) {
+          // Tab
+          e.preventDefault();
+          var start = $(this).get(0).selectionStart;
+          var end = $(this).get(0).selectionEnd;
+
+          // set textarea value to: text before caret + tab + text after caret
+          $(this).val(
+            $(this)
+              .val()
+              .substring(0, start) +
+              "\t" +
+              $(this)
+                .val()
+                .substring(end)
+          );
+
+          // put caret at right position again
+          $(this).get(0).selectionStart = $(this).get(0).selectionEnd =
+            start + 1;
+        }
+
+        lastKeyCode = keyCode;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+SELECT * FROM listing;
+SELECT name, price FROM listing;
+SELECT category FROM listing;
+SELECT DISTINCT category FROM listing;
+SELECT name, price, category FROM listing WHERE price < 8.00 AND category = 'box';    -- introduce parts incrementally
+SELECT SUM(price) FROM listing;
+SELECT COUNT(*) FROM listing;
+SELECT name, price FROM listing ORDER BY price DESC LIMIT 4;
+SELECT name, price FROM listing ORDER BY RANDOM();
+SELECT name, description, price FROM listing WHERE description LIKE '%sleep%';
+-- This is a comment in SQLite
+SELECT * FROM listing WHERE category IN ('bed', 'other');
+
+CREATE TABLE user (id INTEGER PRIMARY KEY, firstName TEXT, lastName TEXT, dateJoined TEXT DEFAULT CURRENT_TIMESTAMP);
+ALTER TABLE user ADD COLUMN dollarsEarned REAL NOT NULL DEFAULT 0;
+INSERT INTO user (firstName, lastName) VALUES ('Abe', 'Lincoln'), ('Albert', 'Einstein'), ('Jon', 'Snow');
+SELECT firstName || ' ' || lastName from user;
+SELECT firstName || ' ' || lastName AS fullName from user WHERE LENGTH(fullName) > 8;
+
+ALTER TABLE user ADD COLUMN email TEXT NOT NULL DEFAULT '';
+CREATE UNIQUE INDEX email_index ON user(email);    -- will fail since all three users have an empty string for their email.
+UPDATE user SET email = lower(firstName) || '@mail.com';
+UPDATE user SET email = 'jon@stark.ws' WHERE email = 'jon@mail.com';
+CREATE UNIQUE INDEX email_index ON user(email); 
+INSERT INTO user (firstName, lastName, email) VALUES ('Abe', 'Simpson', 'abe@mail.com');
+DELETE FROM user WHERE email = 'abe@mail.com';
+
+INSERT INTO user (email) VALUES('anonymous@mail.com');
+SELECT * FROM user WHERE firstName = NULL;
+SELECT * FROM user WHERE firstName IS NULL;
+ 
+-- Joins
+SELECT name, date, listing.id as listingID FROM listing INNER JOIN booking ON listing_id = listing.id;
+SELECT name, date, listing.id as listingID FROM listing LEFT JOIN booking ON listing_id = listing.id;
+
+SELECT SUBSTR(Date, 1, 4) AS Year, AVG(MeanTemp), MIN(MinTemp), MAX(CAST(MaxTemp AS REAL)) FROM weather GROUP BY Year;
+
+CREATE TABLE friend (userID INTEGER NOT NULL REFERENCES user(id), friendID INTEGER NOT NULL REFERENCES user(id));
+INSERT INTO friend VALUES(1, 0), (2, 0), (2, 3);
+INSERT INTO friend VALUES((SELECT id FROM user WHERE username = 'BoJangles'), (SELECT id FROM user WHERE username = 'katnip'));
+SELECT u1.username as user, u2.username as friend, f.* 
+  FROM user u1 
+	INNER JOIN friend f ON u1.id = f.userID
+	INNER JOIN user u2 ON f.friendID = u2.id;
